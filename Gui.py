@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from ApiRequests import APIRequests
-DGB = APIRequests()
+DGB = APIRequests(input("Hotspot Address: "))
 DGB.GetHotspotInfo()
 DGB.GetHotspotActivity()
 def MainLoop():
@@ -10,7 +10,7 @@ def MainLoop():
     root.title(DGB.rJson1['name'])
     HotspotFrame = Frame(root)
     HotspotFrame.grid(column=0, row=0)
-    Button1 = Button(HotspotFrame, text="Get Total Tokens")
+    Button1 = Button(HotspotFrame, text="Refresh")
     Button1.bind("<Button-1>", DGB.GetHotspotInfo)
     Button1.grid(column=2, row=5)
     online = StringVar()

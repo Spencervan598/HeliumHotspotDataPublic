@@ -17,28 +17,28 @@ def addresses(addressfield = 'Address'):
         return [x[addressfield] for x in reader]
         
         
-def atb(address):
-        writedict = {}
-        request = ApiRequests.APIRequests(address)
-        if not(atb:= request.GetHotspotInfo()['timestamp_added']):
+def atb(request):
+        # request = ApiRequests.APIRequests(address)
+        print(request.GetHotspotInfo())
+        if not (atb := request.GetHotspotInfo()['timestamp_added']):
             return("Request for hotspot info failed.")
-        return atb[0:10] if atb else 0
+        return atb[0:10] if not atb else 0
         
 
-def firstreward():
-    pass
+def firstreward(request):
+    request.GetHotspotActivity()
+    if not (rew := request.GetHotspotActivity()):
+        pass
+
+def firstdatatransfer(request):
+    request.GetHotspotActivity()
+
+def firstpoc(request):
+    request.GetHotspotActivity()
 
 
-def firstdatatransfer():
-    pass
-
-
-def firstpoc():
-    pass
-
-
-def allassert():
-    pass
+def allassert(request):
+    request.GetHotspotActivity()
 
 
 def main():
@@ -48,9 +48,11 @@ def main():
         writer = csv.DictWriter(csvfile, fieldnames=fieldnamelist)
         writer.writeheader()
 
-        for i in addresses():
-            csvwritedict = zip(fieldnamelist,[i, atb(), firstreward(), firstdatatransfer(), firstpoc(), allassert()])
-
+        for i in addresses('Hotspot Name'):
+            request = ApiRequests.APIRequests(i)
+            # need to slow this down possibly restricted to 1 request a second maybe 100 a minute then 1 per however long
+            # csvwritedict = dict(zip(fieldnamelist,[i, atb(request), firstreward(request), firstdatatransfer(request), firstpoc(request), allassert(request)]))
+            csvwritedict = dict(zip(fieldnamelist,[i, atb(request)]))
             writer.writerow(csvwritedict)
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
 import requests
 import json
+from time import sleep
+
 class APIRequests:
     def __init__(self, Address):
         self.UrlDict = {'base':'https://api.helium.io/v1/', 'hotspot':'https://api.helium.io/v1/hotspots/'}
@@ -7,17 +9,25 @@ class APIRequests:
         # self.Stats = requests.get("https://api.helium.io/v1/stats")
         self.status = None
     
-    def GetHotspotInfo(self, event = None):
+    def GetHotspotInfo(self, event = None):        
         h1 = requests.get(f"{self.UrlDict['hotspot']}{self.Address}")
-        self.rJson1 = json.loads(h1.content)['data']
+        if h1.status_code == 429:
+            sleep(int(h1.headers['retry-after'])+1)
+            self.GetHotspotInfo()
+        self.rJson1 = json.loads(h1.content)['data'] if json.loads(h1.content)['data'] else {'data':{'timestamp_added': 0}}
+        return self.rJson1
         
-    def GetHotspotActivity(self, event = None):
-        h2 = requests.get(f"{self.UrlDict['hotspot']}{self.Address}/activity")
-        h2 = requests.get(f"{self.UrlDict['hotspot']}{self.Address}/activity?cursor={json.loads(h2.content)['cursor']}")
+    def GetHotspotActivity(self, cursor = None, filters = None, event = None):
+        if not cursor:
+            h2 = requests.get(f"{self.UrlDict['hotspot']}{self.Address}/activity?{filters}")
+            cursor = json.loads(h2.content)['cursor']
+        h2 = requests.get(f"{self.UrlDict['hotspot']}{self.Address}/activity?{cursor}")
         self.rJson2 = json.loads(h2.content)
+        return self.rJson2
     def GetHotspotLocation(self, distance = "15000", event = None):
         h3 = requests.get(f"{self.UrlDict['hotspot']}location/distance?lat={self.rJson1['lat']}&lon={self.rJson1['lon']}&distance={distance}")
+
+
+
 if __name__ == "__main__":
-    DGB = APIRequests()
-    DGB.GetHotspotActivity()
-    print(DGB.activityList)
+    apiObject = APIRequests(input("Hotspot Address"))
