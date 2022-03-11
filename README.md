@@ -5,4 +5,4 @@ This is just a personal project to familiarize myself with tkinter a bit more. W
 
 No longer just a personal project, will be adding functionality that would have been in AirtableScript.
 
-This is no longer being actively worked on. A few weeks after previous commit, client and I decided to stop working on it, as other software/apps had been released that provided the needed functionality.
+This is no longer being actively worked on. A few weeks after previous commit, client and I decided to stop working on it, as other software/apps had been released that provided the needed functionality. To calrify, I may still build upon this for learning at some point. Aside from that this repo is dead.
